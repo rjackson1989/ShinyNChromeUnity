@@ -1,0 +1,26 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 2015
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ShinyNChrome.CSharp.Plugins", "ShinyNChrome.CSharp.Plugins.csproj", "{D537B3CB-37F3-4C2B-34AA-907A5219BE6B}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ShinyNChrome.CSharp", "ShinyNChrome.CSharp.csproj", "{A3002D12-9809-468C-D704-757752D32271}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{D537B3CB-37F3-4C2B-34AA-907A5219BE6B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D537B3CB-37F3-4C2B-34AA-907A5219BE6B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D537B3CB-37F3-4C2B-34AA-907A5219BE6B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D537B3CB-37F3-4C2B-34AA-907A5219BE6B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A3002D12-9809-468C-D704-757752D32271}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A3002D12-9809-468C-D704-757752D32271}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A3002D12-9809-468C-D704-757752D32271}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A3002D12-9809-468C-D704-757752D32271}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal
