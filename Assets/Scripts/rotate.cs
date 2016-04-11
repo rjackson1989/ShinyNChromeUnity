@@ -1,7 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-public class Stats : MonoBehaviour {
+public class rotate : MonoBehaviour {
 
 	// Use this for initialization
 	void Start () {
@@ -10,6 +10,6 @@ public class Stats : MonoBehaviour {
 	
 	// Update is called once per frame
 	void Update () {
-	
+        transform.Rotate(0, 5f, 0);
 	}
 }
