@@ -6,7 +6,7 @@ public class Player : MonoBehaviour {
 
     public int speed = 30, health;
     public float rotationSpeed = 100.0F;
-    public int maxSpeed = 60, maxHealth = 300;
+    public int maxSpeed = 60, maxHealth = 300, shotPower = 50;
     public int altAmmo = 10;
 
 
@@ -41,7 +41,7 @@ public class Player : MonoBehaviour {
         }
         if (health == 0)
         {
-            Instantiate(deathPF, transform.position, Quaternion.identity);
+            Destroy(Instantiate(deathPF.gameObject, transform.position, Quaternion.identity), 0.1f);
             health -= 1;
         }
     }
