@@ -8,7 +8,9 @@ public class Player : MonoBehaviour {
     public float rotationSpeed = 100.0F;
     public int maxSpeed = 60, maxHealth = 300, shotPower = 50;
     public int altAmmo = 10;
-
+	private Rigidbody rb;
+	private Vector3 forward;
+	private float translation;
 
     public int playerNumber = 1;
     public Transform deathPF, hitPF;
@@ -16,6 +18,7 @@ public class Player : MonoBehaviour {
     // Use this for initialization
     void Start () {
         health = maxHealth;
+		rb = GetComponent<Rigidbody>();
 	}
 
     // Update is called once per frame
@@ -24,27 +27,34 @@ public class Player : MonoBehaviour {
     {
         if (health > 0)
         {
-            float translation = Input.GetAxis("Vertical" + playerNumber) * speed;
+            translation = Input.GetAxis("Vertical" + playerNumber) * speed;
             float rotation = Input.GetAxis("Horizontal" + playerNumber) * rotationSpeed;
             translation *= Time.deltaTime;
             rotation *= Time.deltaTime;
             Quaternion q = transform.rotation;
-            Vector3 forward = q * Vector3.forward;
-            transform.Translate(-forward * translation);
-            transform.Rotate(0, 0, rotation);
+            forward = q * Vector3.forward;
+			rb.velocity += forward * translation;
+            
+            //transform.Translate(-forward * translation);
+            transform.Rotate(0, rotation, 0);
 
-            if (Input.GetButtonDown("Fire" + playerNumber))
-            {
-                gun.fireBullet();
-            }
+            
             
         }
         if (health == 0)
         {
-            Destroy(Instantiate(deathPF.gameObject, transform.position, Quaternion.identity), 0.1f);
+            Destroy(Instantiate(deathPF.gameObject, transform.position, Quaternion.identity), 0.5f);
             health -= 1;
         }
     }
+	void FixedUpdate()
+	{
+		if (Input.GetButtonDown("Fire" + playerNumber))
+            {
+                gun.fireBullet();
+            }
+		
+	}
     void OnCollisionEnter(Collision collision)
     {
 
