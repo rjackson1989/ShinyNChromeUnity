@@ -19,6 +19,7 @@ public class PowerUp : MonoBehaviour {
             if(countdown <= 0f)
             {
                 box = (Transform) Instantiate(boxPF, transform.position, transform.rotation);
+                box.parent = transform;
                 countdown = 3.0f;
             }
             

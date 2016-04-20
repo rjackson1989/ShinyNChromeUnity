@@ -1,5 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections;
+using UnityEngine.UI;
+using UnityEngine.SceneManagement;
 using System;
 
 public class Player : MonoBehaviour {
@@ -11,7 +13,10 @@ public class Player : MonoBehaviour {
 	private Rigidbody rb;
 	private Vector3 forward;
 	private float translation;
+    public float respawnTime = 5.0f;
+    public Text UIText;
     public GameObject body;
+    public GameObject optionPanel;
 
     public int playerNumber = 1;
     public Transform deathPF, hitPF;
@@ -19,48 +24,75 @@ public class Player : MonoBehaviour {
     // Use this for initialization
     void Start () {
         health = maxHealth;
+        UIText.text = "Player " + playerNumber + " Health: " + health;
 		rb = GetComponent<Rigidbody>();
+        optionPanel.SetActive(false);
 	}
 
     // Update is called once per frame
 
     void Update()
     {
-        if (body == null)
+        if (!optionPanel.activeSelf)
         {
-            //body = Instantiate()
-        }
-        if (health > 0)
-        {
-            translation = Input.GetAxis("Vertical" + playerNumber) * speed;
-            float rotation = Input.GetAxis("Horizontal" + playerNumber) * rotationSpeed;
-            translation *= Time.deltaTime;
-            rotation *= Time.deltaTime;
-            Quaternion q = transform.rotation;
-            forward = q * Vector3.forward;
-			rb.velocity += forward * translation;
-            
-            //transform.Translate(-forward * translation);
-            transform.Rotate(0, rotation, 0);
+            if (body != null)
+            {
+                UIText.text = "Player " + playerNumber + " Health: " + health;
+                if (health > 0)
+                {
 
-            
-            
+                    translation = Input.GetAxis("Vertical" + playerNumber) * speed;
+                    float rotation = Input.GetAxis("Horizontal" + playerNumber) * rotationSpeed;
+                    translation *= Time.deltaTime;
+                    rotation *= Time.deltaTime;
+                    Quaternion q = transform.rotation;
+                    forward = q * Vector3.forward;
+                    rb.velocity += forward * translation;
+
+                    //transform.Translate(-forward * translation);
+                    transform.Rotate(0, rotation, 0);
+
+
+
+                }
+
+                if (health <= 0)
+                {
+                    UIText.text = "Player " + playerNumber + " Health: 0";
+                    Destroy(Instantiate(deathPF.gameObject, transform.position, Quaternion.identity), 0.5f);
+                    Destroy(body);
+                    health = maxHealth;
+                }
+            }
+            else
+            {
+                rb.useGravity = false;
+                optionPanel.SetActive(true);
+            }
+
         }
-        if (health <= 0)
+        else
         {
-            Destroy(Instantiate(deathPF.gameObject, transform.position, Quaternion.identity), 0.5f);
-            Destroy(body);
-            health = maxHealth;
+            if (Input.GetButtonDown("Fire" + playerNumber))
+            {
+                optionPanel.SetActive(false);
+            }
+
+
         }
+
     }
 	void FixedUpdate()
 	{
-		if (Input.GetButtonDown("Fire" + playerNumber))
+        if (!optionPanel.activeSelf)
+        {
+            if (Input.GetButtonDown("Fire" + playerNumber))
             {
                 gun.fireBullet();
             }
-		
-	}
+        }
+
+    }
     void OnCollisionEnter(Collision collision)
     {
 
