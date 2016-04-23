@@ -76,6 +76,7 @@
     <Compile Include="Assets\Scripts\GamePlay\minigun.cs" />
     <Compile Include="Assets\Scripts\GamePlay\rotate.cs" />
     <Compile Include="Assets\Scripts\Menu\LoadOnClick.cs" />
+    <Compile Include="Assets\Scripts\Menu\PauseMenu.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Assets\Standard Assets\Environment\Water (Basic)\Shaders\FXWaterBasic.shader" />

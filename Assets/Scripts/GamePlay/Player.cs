@@ -6,25 +6,44 @@ using System;
 
 public class Player : MonoBehaviour {
 
+    enum states
+    {
+        alive,
+        dead,
+        paused
+    }
+    //variable values
     public int speed = 30, health;
     public float rotationSpeed = 100.0F;
     public int maxSpeed = 60, maxHealth = 300, shotPower = 50;
     public int altAmmo = 10;
-	private Rigidbody rb;
+    public float respawnTime = 5.0f;
+    public int currentLives = 5;
+	public String[] weapons;
+
+    //generic variables
 	private Vector3 forward;
 	private float translation;
-    public float respawnTime = 5.0f;
-    public Text UIText;
-    public GameObject body;
-    public GameObject optionPanel;
+    public int currentWeapon;
+    private states currentState;
 
+    //object components
+    private Rigidbody rb;
     public int playerNumber = 1;
     public Transform deathPF, hitPF;
     public minigun gun;
+    public Text UIText;
+    public Text weaponText;
+    public Text livesText;
+    public GameObject body;
+    public GameObject optionPanel;
+
+
     // Use this for initialization
     void Start () {
+        currentState = states.alive;
         health = maxHealth;
-        UIText.text = "Player " + playerNumber + " Health: " + health;
+        updateUIText();
 		rb = GetComponent<Rigidbody>();
         optionPanel.SetActive(false);
 	}
@@ -33,25 +52,29 @@ public class Player : MonoBehaviour {
 
     void Update()
     {
-        if (!optionPanel.activeSelf)
+
+        if (!optionPanel.activeSelf) //not paused
         {
-            if (body != null)
+            if (body.activeSelf) //I haven't been killed
             {
-                UIText.text = "Player " + playerNumber + " Health: " + health;
+                updateUIText();
                 if (health > 0)
                 {
 
-                    translation = Input.GetAxis("Vertical" + playerNumber) * speed;
-                    float rotation = Input.GetAxis("Horizontal" + playerNumber) * rotationSpeed;
-                    translation *= Time.deltaTime;
-                    rotation *= Time.deltaTime;
-                    Quaternion q = transform.rotation;
-                    forward = q * Vector3.forward;
-                    rb.velocity += forward * translation;
+                    calculateMovement();
 
-                    //transform.Translate(-forward * translation);
-                    transform.Rotate(0, rotation, 0);
-
+                    if (Input.GetButtonDown("Select" + playerNumber))
+                    {
+                        currentWeapon++;
+                        if (currentWeapon > 1)
+                        {
+                            currentWeapon = 0;
+                        }
+                    }
+                    if (Input.GetButtonDown("Menu"))
+                    {
+                        optionPanel.SetActive(true);
+                    }
 
 
                 }
@@ -60,60 +83,111 @@ public class Player : MonoBehaviour {
                 {
                     UIText.text = "Player " + playerNumber + " Health: 0";
                     Destroy(Instantiate(deathPF.gameObject, transform.position, Quaternion.identity), 0.5f);
-                    Destroy(body);
+                    body.SetActive(false);
+                    currentLives--;
                     health = maxHealth;
                 }
             }
             else
             {
                 rb.useGravity = false;
-                optionPanel.SetActive(true);
+                rb.velocity = new Vector3(0, 0, 0);
+
+                if (currentLives > 0) //no respawning if you run out of lives
+                {
+                    if (respawnTime >= 0)
+                    {
+                        respawnTime -= Time.deltaTime;
+                        UIText.text = "Respawn in " + Mathf.Round(respawnTime) + " sec";
+                    }
+                    else
+                    {
+                        respawnTime = 5.0f;
+                        rb.useGravity = true;
+                        body.SetActive(true);
+                    }
+                }
+                else
+                {
+                    updateUIText();
+                    optionPanel.SetActive(true);
+                }
+
             }
 
         }
-        else
+        else if(currentLives > 0)
         {
-            if (Input.GetButtonDown("Fire" + playerNumber))
+            rb.velocity = new Vector3(0, 0, 0);
+            if (Input.GetButtonDown("Cancel"))
             {
                 optionPanel.SetActive(false);
             }
-
-
         }
+        
 
     }
-	void FixedUpdate()
+
+    
+
+    void FixedUpdate()
 	{
         if (!optionPanel.activeSelf)
         {
             if (Input.GetButtonDown("Fire" + playerNumber))
             {
-                gun.fireBullet();
+                gun.fireBullet(currentWeapon, playerNumber);
             }
+            
         }
 
     }
+
+    
     void OnCollisionEnter(Collision collision)
     {
 
         if (collision.gameObject.tag.Equals("SpeedUp"))
         {
-            speed = maxSpeed;
+            gun.addBullet(1, 5);
             Destroy(collision.gameObject);
         }
         else if (collision.gameObject.tag.Equals("AmmoUp"))
         {
-            altAmmo += 5;
+            gun.addBullet(0, 10);
             Destroy(collision.gameObject);
         }
-        else if (collision.gameObject.tag.Equals("bullet"))
+        else if (collision.gameObject.tag.Equals("bullet" + playerNumber))
+        { 
+            //ignore
+        }
+        else if (collision.gameObject.tag.Contains("bullet"))
         {
-            health -= 50;
-            ContactPoint hit = collision.contacts[1];
+            health -= shotPower;
+            ContactPoint hit = collision.contacts[0];
 
             Destroy(collision.gameObject);
-            Destroy(Instantiate(hitPF.gameObject, hit.point, Quaternion.identity),0.3f);
-            
+            Destroy(Instantiate(hitPF.gameObject, hit.point, Quaternion.identity), 0.3f);
+
         }
+    }
+    private void updateUIText()
+    {
+        UIText.text = "Player " + playerNumber + " Health: " + health;
+        weaponText.text = weapons[currentWeapon] + ": " + gun.getAmount(currentWeapon);
+        livesText.text = "Lives: " + currentLives;
+    }
+    private void calculateMovement()
+    {
+        translation = Input.GetAxis("Vertical" + playerNumber) * speed;
+        float rotation = Input.GetAxis("Horizontal" + playerNumber) * rotationSpeed;
+        translation *= Time.deltaTime;
+        rotation *= Time.deltaTime;
+        Quaternion q = transform.rotation;
+        forward = q * Vector3.forward;
+        rb.velocity += forward * translation;
+
+        //transform.Translate(-forward * translation);
+        transform.Rotate(0, rotation, 0);
     }
 }
