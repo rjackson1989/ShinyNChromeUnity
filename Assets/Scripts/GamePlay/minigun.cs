@@ -2,7 +2,6 @@
 using System.Collections;
 
 public class minigun : MonoBehaviour {
-
     enum bullets {
         single,
         twin
@@ -24,7 +23,9 @@ public class minigun : MonoBehaviour {
         {
             case bullets.single:
                 if (totalSingle <= 0) { break; }
+                
                 shot = (Rigidbody)Instantiate(bulletPF.gameObject.GetComponent<Rigidbody>(), transform.position, Quaternion.identity);
+
                 q = transform.rotation;
                 forward = q * Vector3.forward;
                 shot.AddForce(forward * 20000f, ForceMode.Force);

@@ -38,6 +38,13 @@ public class Player : MonoBehaviour {
     public GameObject body;
     public GameObject optionPanel;
 
+    // Audio components
+    public AudioClip impact;
+    public AudioClip destroy;
+
+
+    private AudioSource audioImpact;
+    private AudioSource audioDestroy;
 
     // Use this for initialization
     void Start () {
@@ -46,8 +53,11 @@ public class Player : MonoBehaviour {
         updateUIText();
 		rb = GetComponent<Rigidbody>();
         optionPanel.SetActive(false);
-	}
+        audioImpact = GetComponent<AudioSource>();
+        audioDestroy = GetComponent<AudioSource>();
 
+	}
+    
     // Update is called once per frame
 
     void Update()
@@ -82,6 +92,8 @@ public class Player : MonoBehaviour {
                 if (health <= 0)
                 {
                     UIText.text = "Player " + playerNumber + " Health: 0";
+                    audioImpact.Stop();
+                    audioDestroy.Play();
                     Destroy(Instantiate(deathPF.gameObject, transform.position, Quaternion.identity), 0.5f);
                     body.SetActive(false);
                     currentLives--;
@@ -165,7 +177,7 @@ public class Player : MonoBehaviour {
         {
             health -= shotPower;
             ContactPoint hit = collision.contacts[0];
-
+            audioImpact.Play();
             Destroy(collision.gameObject);
             Destroy(Instantiate(hitPF.gameObject, hit.point, Quaternion.identity), 0.3f);
 
