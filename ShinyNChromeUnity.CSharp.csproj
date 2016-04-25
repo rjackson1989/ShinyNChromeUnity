@@ -75,6 +75,7 @@
     <Compile Include="Assets\Scripts\GamePlay\Suicide.cs" />
     <Compile Include="Assets\Scripts\GamePlay\minigun.cs" />
     <Compile Include="Assets\Scripts\GamePlay\rotate.cs" />
+    <Compile Include="Assets\Scripts\GamePlay\wayPoint.cs" />
     <Compile Include="Assets\Scripts\Menu\LoadOnClick.cs" />
     <Compile Include="Assets\Scripts\Menu\PauseMenu.cs" />
   </ItemGroup>
