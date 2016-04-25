@@ -19,4 +19,3 @@ C:\Users\Alexander\Desktop\Unity\ShinyNChromeUnity\Temp\bin\Debug\UnityEngine.Ne
 C:\Users\Alexander\Desktop\Unity\ShinyNChromeUnity\obj\Debug\Assembly-CSharp.csprojResolveAssemblyReference.cache
 C:\Users\Alexander\Desktop\Unity\ShinyNChromeUnity\obj\Debug\Assembly-CSharp.dll
 C:\Users\Alexander\Desktop\Unity\ShinyNChromeUnity\obj\Debug\Assembly-CSharp.pdb
-C:\Users\Alexander\Desktop\Unity\ShinyNChromeUnity\Temp\bin\Debug\Assembly-CSharp-firstpass.pdb
