@@ -39,12 +39,10 @@ public class Player : MonoBehaviour {
     public GameObject optionPanel;
 
     // Audio components
-    public AudioClip impact;
-    public AudioClip destroy;
-
-
     private AudioSource audioImpact;
     private AudioSource audioDestroy;
+    private AudioSource audioFire;
+
 
     // Use this for initialization
     void Start () {
@@ -53,10 +51,11 @@ public class Player : MonoBehaviour {
         updateUIText();
 		rb = GetComponent<Rigidbody>();
         optionPanel.SetActive(false);
-        audioImpact = GetComponent<AudioSource>();
-        audioDestroy = GetComponent<AudioSource>();
-
-	}
+        AudioSource[] audioSources = GetComponents<AudioSource>();
+        audioImpact = audioSources[0];
+        audioDestroy = audioSources[1];
+        audioFire = audioSources[2];
+}
     
     // Update is called once per frame
 
@@ -148,6 +147,10 @@ public class Player : MonoBehaviour {
         {
             if (Input.GetButtonDown("Fire" + playerNumber))
             {
+                if (gun.totalSingle > 0)
+                {
+                    audioFire.Play();
+                }
                 gun.fireBullet(currentWeapon, playerNumber);
             }
             
