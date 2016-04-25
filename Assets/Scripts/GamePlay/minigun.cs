@@ -8,10 +8,10 @@ public class minigun : MonoBehaviour {
     }
     public Transform bulletPF;
     public Transform doubleBulletPF;
-    int totalSingle = 10;
+    public int totalSingle = 10;
     int totalTwin = 0;
     int max = 99;
-
+    
     public void fireBullet(int bullet, int number)
     {
         bullets selection = (bullets)bullet;
@@ -23,9 +23,7 @@ public class minigun : MonoBehaviour {
         {
             case bullets.single:
                 if (totalSingle <= 0) { break; }
-                
                 shot = (Rigidbody)Instantiate(bulletPF.gameObject.GetComponent<Rigidbody>(), transform.position, Quaternion.identity);
-
                 q = transform.rotation;
                 forward = q * Vector3.forward;
                 shot.AddForce(forward * 20000f, ForceMode.Force);
