@@ -11,7 +11,17 @@ public class minigun : MonoBehaviour {
     public int totalSingle = 10;
     int totalTwin = 0;
     int max = 99;
-    
+
+    private AudioSource audioEmpty;
+    private AudioSource audioFire;
+
+    void Awake()
+    {
+        AudioSource[] audioSources = GetComponents<AudioSource>();
+        audioFire = audioSources[0];
+        audioEmpty = audioSources[1];
+    }
+
     public void fireBullet(int bullet, int number)
     {
         bullets selection = (bullets)bullet;
@@ -22,7 +32,12 @@ public class minigun : MonoBehaviour {
         switch (selection)
         {
             case bullets.single:
-                if (totalSingle <= 0) { break; }
+                if (totalSingle <= 0)
+                {
+                    audioEmpty.Play();
+                    break;
+                }
+                audioFire.Play();
                 shot = (Rigidbody)Instantiate(bulletPF.gameObject.GetComponent<Rigidbody>(), transform.position, Quaternion.identity);
                 q = transform.rotation;
                 forward = q * Vector3.forward;
@@ -31,7 +46,12 @@ public class minigun : MonoBehaviour {
                 totalSingle--;
                 break;
             case bullets.twin:
-                if (totalTwin <= 0) { break; }
+                if (totalTwin <= 0)
+                {
+                    audioEmpty.Play();
+                    break;
+                }
+                audioFire.Play();
                 shot = (Rigidbody)Instantiate(doubleBulletPF.gameObject.GetComponent<Rigidbody>(), transform.position, Quaternion.identity);
                 q = transform.rotation;
                 forward = q * Vector3.forward;

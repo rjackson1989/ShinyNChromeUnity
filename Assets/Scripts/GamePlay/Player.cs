@@ -6,16 +6,11 @@ using System;
 
 public class Player : MonoBehaviour {
 
-    enum states
-    {
-        alive,
-        dead,
-        paused
-    }
+  
     //variable values
     public int speed = 30, health;
     public float rotationSpeed = 100.0F;
-    public int maxSpeed = 60, maxHealth = 300, shotPower = 50;
+    public int maxSpeed = 60, maxHealth = 300, shotPower = 30;
     public int altAmmo = 10;
     public float respawnTime = 5.0f;
     public int currentLives = 5;
@@ -25,7 +20,6 @@ public class Player : MonoBehaviour {
 	private Vector3 forward;
 	private float translation;
     public int currentWeapon;
-    private states currentState;
 
     //object components
     private Rigidbody rb;
@@ -37,16 +31,17 @@ public class Player : MonoBehaviour {
     public Text livesText;
     public GameObject body;
     public GameObject optionPanel;
-
+    public bool isHit = false;
     // Audio components
     private AudioSource audioImpact;
     private AudioSource audioDestroy;
-    private AudioSource audioFire;
+    private AudioSource audioRev;
+    private AudioSource audioAmmo;
+    private AudioSource audioHealth;
 
 
     // Use this for initialization
     void Start () {
-        currentState = states.alive;
         health = maxHealth;
         updateUIText();
 		rb = GetComponent<Rigidbody>();
@@ -54,7 +49,10 @@ public class Player : MonoBehaviour {
         AudioSource[] audioSources = GetComponents<AudioSource>();
         audioImpact = audioSources[0];
         audioDestroy = audioSources[1];
-        audioFire = audioSources[2];
+        audioRev = audioSources[2];
+        audioAmmo = audioSources[3];
+        audioHealth = audioSources[4];
+        audioRev.Play();
 }
     
     // Update is called once per frame
@@ -147,11 +145,7 @@ public class Player : MonoBehaviour {
         {
             if (Input.GetButtonDown("Fire" + playerNumber))
             {
-                if (gun.totalSingle > 0)
-                {
-                    audioFire.Play();
-                }
-                gun.fireBullet(currentWeapon, playerNumber);
+               gun.fireBullet(currentWeapon, playerNumber);
             }
             
         }
@@ -164,25 +158,41 @@ public class Player : MonoBehaviour {
 
         if (collision.gameObject.tag.Equals("SpeedUp"))
         {
+            audioAmmo.Play();
             gun.addBullet(1, 5);
             Destroy(collision.gameObject);
         }
         else if (collision.gameObject.tag.Equals("AmmoUp"))
         {
+            audioAmmo.Play();
             gun.addBullet(0, 10);
             Destroy(collision.gameObject);
         }
+        else if (collision.gameObject.tag.Equals("HealthUp"))
+        {
+            audioHealth.Play();
+            
+            health += 30;
+            if (health > maxHealth)
+            {
+                health = 300;
+            }
+            Destroy(collision.gameObject);
+        }
         else if (collision.gameObject.tag.Equals("bullet" + playerNumber))
-        { 
-            //ignore
+        {
+
         }
         else if (collision.gameObject.tag.Contains("bullet"))
         {
-            health -= shotPower;
+         
+                health -= shotPower;
+           
             ContactPoint hit = collision.contacts[0];
             audioImpact.Play();
             Destroy(collision.gameObject);
             Destroy(Instantiate(hitPF.gameObject, hit.point, Quaternion.identity), 0.3f);
+           
 
         }
     }
@@ -201,7 +211,6 @@ public class Player : MonoBehaviour {
         Quaternion q = transform.rotation;
         forward = q * Vector3.forward;
         rb.velocity += forward * translation;
-
         //transform.Translate(-forward * translation);
         transform.Rotate(0, rotation, 0);
     }

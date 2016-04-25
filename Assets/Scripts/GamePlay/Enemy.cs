@@ -3,71 +3,32 @@ using System.Collections;
 
 public class Enemy : MonoBehaviour {
 
-    public GameObject[] spots;
-    public float sightRange = 30.0f;
-    public float chaseTime = 25.0f;
-    public bool playerDetected;
-    public Transform player;
-
-    public int index;
+    //private enum states { };
     private NavMeshAgent agent;
-    // Use this for initialization
-    void Start()
-    {
-        player = GameObject.FindGameObjectWithTag("Player").transform;
-        index = 0;
-        playerDetected = false;
+    public GameObject target;
+    private GameObject[] playerList;
+
+	// Use this for initialization
+	void Start () {
         agent = GetComponent<NavMeshAgent>();
-        agent.SetDestination(spots[index].transform.position);
-    }
+        playerList = GameObject.FindGameObjectsWithTag("Player");
+        float firstDist = Vector3.Distance(transform.position, playerList[0].transform.position);
+        float secDist = Vector3.Distance(transform.position, playerList[1].transform.position);
 
-    // Update is called once per frame
-    void Update()
-    {
-        RaycastHit hit;
-        Ray sight = new Ray(transform.position, transform.forward);
-        if (!playerDetected)
+        if (secDist > firstDist)
         {
-            if (spots[index].GetComponent<wayPoint>().isTriggered == true)
-            {
-                index++;
-                if (index >= spots.Length)
-                {
-                    index = 0;
-                }
-                agent.SetDestination(spots[index].transform.position);
-                agent.updateRotation = true;
-            }
-            else
-            {
-                agent.SetDestination(spots[index].transform.position);
-            }
-
-            if (Physics.Raycast(sight, out hit, sightRange))
-            {
-                if (hit.collider.tag.Equals("Player"))
-                {
-                    playerDetected = true;
-                }
-            }
+            target = playerList[0];
+            
         }
-        else {
-            agent.SetDestination(player.position);
-            chaseTime -= Time.deltaTime;
-            if (Physics.Raycast(sight, out hit, sightRange))
-            {
-                if (hit.collider.tag.Equals("Player"))
-                {
-                    chaseTime = 25.0f;
-                }
-            }
-            if (chaseTime <= 0)
-            {
-                playerDetected = false;
-                agent.SetDestination(spots[index].transform.position);
-                chaseTime = 25.0f;
-            }
+        else
+        {
+            target = playerList[1];
         }
+    }
+	
+	// Update is called once per frame
+	void Update () {
 
+        agent.SetDestination(target.transform.position);
     }
 }
